@@ -1,13 +1,13 @@
+import React from 'react';
 import logo from './logo.svg';
 import './index.css';
-import { Weather } from './Weather';
-
+import Weather from './Weather';
 
 function App() {
   return (
-    <React.StrictMode>
+    <div>
       <Weather />
-    </React.StrictMode>
+    </div>
   );
 }
 
