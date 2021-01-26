@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from "react";
+import './index.css';
+
+/*
+ READ 
+    IF app doesn't work
+    TRY THIS
+    let CITY = json.results[CHANGE THIS TO 4, 7 or 8].formatted_address; 
+ READ
+*/
 
 const APIKEY = "54b44eee6a978fd43b89a4694606f143";
 const MAPKEY = "AIzaSyBSihlmUndb3oulieyYlVzwo7yqoyijk9M";
@@ -11,13 +20,13 @@ const initWeather = {
     // Visual - icons
     //icon: null,                                     // Fetch corresponding image. Download this once at start, then display
     // Temperature
-    //temp: null,                                     // Add feelslike, max/min
-    //pressure: null,
-    //humidity: null,
+    temp: null,                                     // Add feelslike, max/min
+    pressure: null,
+    humidity: null,
     // Atmosphere
-    //visibility: null,
-    //wind: null,
-    //clouds: null,
+    visibility: null,
+    windSpeed: null,
+    clouds: null,
     // Meta data
     //country: null,
     //name: null,
@@ -48,6 +57,13 @@ function Weather() {
             setWeather({
                 mainWeather: json.weather[0].main,
                 weatherDetail: json.weather[0].description,
+                windSpeed: json.wind.speed,
+                clouds: json.clouds.all,
+                humidity: json.main.humidity,
+                temp: json.main.temp,
+                // Feelslike
+                pressure: json.main.pressure,
+                visibility: json.visibility,
             });
         }
 
@@ -58,7 +74,12 @@ function Weather() {
             const json = await response.json();
             console.log(json);
 
-            let CITY = json.results[4].formatted_address;                          // Change source here should there be an issue returning wrong city
+            // Bug here where sometimes the wrong json is returned
+            // Fix: IF 404s try reading this json again but a different array. Either 4, or 7
+            // OR Do a check here to see which json file is returned (they're different lengths)
+            // Shorter one, read 4, longer read 7 or 8. Or try different numbers until a valid city is returned
+
+            let CITY = json.results[8].formatted_address;                          // Change source here should there be an issue returning wrong city
             console.log(CITY);
 
             var CITYFormatted = "";                                                // Init, declare
@@ -67,6 +88,7 @@ function Weather() {
                 CITYFormatted = CITYFormatted + CITY.substring(i, i + 1);
             }
             console.log(CITYFormatted);
+            // (while error) 4, 7, 8. getweather should return status code so if not 200 - loop
             getWeather(CITYFormatted);
         }
 
@@ -104,10 +126,29 @@ function Weather() {
     return (
         <div className="weatherMain">
             <h2>Weather Data</h2>
-            <h3>{`Main: ${weatherData.mainWeather}`}</h3>
-            <h3>{`Description: ${weatherData.weatherDetail}`}</h3>
+            <div className="wrapper">
+                <div className="leftDiv">
+                    <h3>{`Main weather: ${weatherData.mainWeather}`}</h3>
+                    <h3>{`Description: ${weatherData.weatherDetail}`}</h3>
+                    <h3>{`Wind speed: ${weatherData.windSpeed}m/s`}</h3>
+                    <h3>{`Visibility: ${weatherData.visibility}m`}</h3>
+                </div>
+                <div className="rigthDiv">
+                    <h3>{`Cloud coverage: ${weatherData.clouds}%`}</h3>
+                    <h3>{`Humidity ${weatherData.humidity}%`}</h3>
+                    <h3>{`Temperature ${(Math.round((weatherData.temp - 273.15) * 100) / 10)}°C`}</h3>
+                    <h3>{`Pressure: ${(weatherData.pressure * 100)}Pa`}</h3>
+                </div>
+            </div>
         </div>
     );
 }
 
 export default Weather;
+
+// TODO
+// Ability to add own weather stations
+// Add more telemetry
+// Fix location bug
+// Add icon system - fetch corresponding image based on the API's "icon" response  
+// Style page better 
