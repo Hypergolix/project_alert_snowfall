@@ -9,8 +9,8 @@ import './index.css';
  READ
 */
 
-const APIKEY = "54b44eee6a978fd43b89a4694606f143";
-const MAPKEY = "AIzaSyBSihlmUndb3oulieyYlVzwo7yqoyijk9M";
+const APIKEY = "REDACTED";
+const MAPKEY = "REDACTED";
 
 // External API profile, create Internal later - for user stations
 const initWeather = {
